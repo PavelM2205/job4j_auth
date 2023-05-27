@@ -1,4 +1,4 @@
-package ru.job4j.job4j.auth;
+package ru.job4j.auth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

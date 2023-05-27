@@ -1,4 +1,4 @@
-package ru.job4j.job4j.auth;
+package ru.job4j.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +8,6 @@ public class Job4jAuthApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Job4jAuthApplication.class, args);
+		System.out.println("Go to: http://localhost:8080/index");
 	}
-
 }
