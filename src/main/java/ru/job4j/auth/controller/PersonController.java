@@ -4,16 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.model.Person;
-import ru.job4j.auth.repository.PersonRepository;
+import ru.job4j.auth.service.PersonService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-    private final PersonRepository persons;
+    private final PersonService persons;
 
-    public PersonController(PersonRepository persons) {
+    public PersonController(PersonService persons) {
         this.persons = persons;
     }
 
@@ -34,22 +34,20 @@ public class PersonController {
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
         return new ResponseEntity<Person>(
-                persons.save(person),
+                persons.create(person),
                 HttpStatus.CREATED
         );
     }
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        persons.save(person);
-        return ResponseEntity.ok().build();
+        return persons.update(person) ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        Person person = new Person();
-        person.setId(id);
-        persons.delete(person);
-        return ResponseEntity.ok().build();
+        return persons.delete(id) ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
