@@ -1,23 +1,23 @@
 package ru.job4j.auth.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.model.Person;
-import ru.job4j.auth.service.PersonService;
+import ru.job4j.auth.service.UserDetailsServiceImpl;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/person")
+@AllArgsConstructor
 public class PersonController {
-    private final PersonService persons;
+    private final UserDetailsServiceImpl persons;
+    private final BCryptPasswordEncoder encoder;
 
-    public PersonController(PersonService persons) {
-        this.persons = persons;
-    }
-
-    @GetMapping("/")
+    @GetMapping("/all")
     public List<Person> findAll() {
         return persons.findAll();
     }
@@ -25,17 +25,9 @@ public class PersonController {
     @GetMapping("/{id}")
     public ResponseEntity<Person> findById(@PathVariable int id) {
         var person = persons.findById(id);
-        return new ResponseEntity<Person>(
+        return new ResponseEntity<>(
                 person.orElse(new Person()),
                 person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
-        return new ResponseEntity<Person>(
-                persons.create(person),
-                HttpStatus.CREATED
         );
     }
 
@@ -49,5 +41,12 @@ public class PersonController {
     public ResponseEntity<Void> delete(@PathVariable int id) {
         return persons.delete(id) ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<Void> signUp(@RequestBody Person person) {
+        person.setPassword(encoder.encode(person.getPassword()));
+        persons.create(person);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

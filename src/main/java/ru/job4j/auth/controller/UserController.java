@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.model.Person;
-import ru.job4j.auth.service.PersonService;
+import ru.job4j.auth.service.UserDetailsServiceImpl;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
-    private final PersonService personService;
+    private final UserDetailsServiceImpl personService;
     private final BCryptPasswordEncoder encoder;
 
     @PostMapping("/sign-up")
