@@ -14,6 +14,7 @@ import ru.job4j.auth.model.PersonDto;
 import ru.job4j.auth.service.UserDetailsServiceImpl;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         if (person.getLogin().isEmpty() || person.getPassword().isEmpty()) {
             throw new NullPointerException("Login or password mustn't be empty");
         }
@@ -71,7 +72,7 @@ public class PersonController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@RequestBody Person person) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody Person person) {
         if (person.getLogin().isEmpty() || person.getPassword().isEmpty()) {
             throw new NullPointerException("Login or password mustn't be empty");
         }
@@ -81,7 +82,7 @@ public class PersonController {
     }
 
     @PatchMapping("/patch/{id}")
-    public ResponseEntity<Person> patch(@PathVariable int id,
+    public ResponseEntity<Person> patch(@Valid @PathVariable int id,
                                         @RequestBody PersonDto personDto) {
         Person person = persons.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
