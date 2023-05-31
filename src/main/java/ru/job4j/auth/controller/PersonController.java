@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.model.Person;
+import ru.job4j.auth.model.PersonDto;
 import ru.job4j.auth.service.UserDetailsServiceImpl;
 
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +78,19 @@ public class PersonController {
         person.setPassword(encoder.encode(person.getPassword()));
         persons.create(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/patch/{id}")
+    public ResponseEntity<Person> patch(@PathVariable int id,
+                                        @RequestBody PersonDto personDto) {
+        Person person = persons.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Person with such id doesn't exist"));
+        person.setPassword(personDto.getPassword());
+        if (!persons.update(person)) {
+            throw new IllegalStateException("Person failed to update");
+        }
+        return ResponseEntity.ok().body(person);
     }
 
     @ExceptionHandler(value = {IllegalStateException.class})
