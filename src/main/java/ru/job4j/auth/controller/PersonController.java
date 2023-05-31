@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.model.Person;
@@ -16,11 +14,8 @@ import ru.job4j.auth.service.UserDetailsServiceImpl;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/person")
@@ -82,54 +77,6 @@ public class PersonController {
         person.setPassword(encoder.encode(person.getPassword()));
         persons.create(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @GetMapping("/example1")
-    public ResponseEntity<?> example1() {
-        return ResponseEntity.ok("This is example end point");
-    }
-
-    @GetMapping("/example3")
-    public ResponseEntity<?> example3() {
-        Object body = new HashMap<>() {{
-            put("key", "value");
-        }};
-        var entity = new ResponseEntity<>(
-                body,
-                new MultiValueMapAdapter<>(Map.of("CustomerHeader",
-                        List.of("job4j"))),
-                HttpStatus.OK
-
-        );
-        return entity;
-    }
-
-    @GetMapping("/example4")
-    public ResponseEntity<String> example4() {
-        var body = new HashMap<>() {{
-            put("key", "value");
-        }}.toString();
-        var entity = ResponseEntity.status(HttpStatus.CONFLICT)
-                .header("CustomeHeader", "job4j")
-                .contentType(MediaType.TEXT_PLAIN)
-                .contentLength(body.length())
-                .body(body);
-        return entity;
-    }
-
-    @GetMapping("/example5")
-    public ResponseEntity<byte[]> example5() throws IOException {
-        var content = Files.readAllBytes(Path.of(
-                "./src/main/resources/files/book.pdf"));
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(content.length)
-                .body(content);
-    }
-
-    @GetMapping("example6")
-    public byte[] example6() throws IOException {
-        return Files.readAllBytes(Path.of("./pom.xml"));
     }
 
     @ExceptionHandler(value = {IllegalStateException.class})
