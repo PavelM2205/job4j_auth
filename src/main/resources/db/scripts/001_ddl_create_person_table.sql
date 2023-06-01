@@ -1,0 +1,5 @@
+CREATE TABLE person (
+    id SERIAL PRIMARY KEY,
+    login VARCHAR(2000) NOT NULL UNIQUE,
+    password VARCHAR(2000) NOT NULL
+);
